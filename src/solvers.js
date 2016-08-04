@@ -59,6 +59,8 @@ window.countNRooksSolutions = function(n) {
   var solution = {}; //fixme
   //Like rock,paper, scissors
   var arr = new Board({n: n});
+  var board = arr.rows();
+
   //var rooksPlaced = 0;
   //var badCol = [];
   //var badRow = [];
@@ -69,51 +71,49 @@ window.countNRooksSolutions = function(n) {
     }
     return true;
   };
+  counter = 0;
 
   //arr.togglePiece(0, 0);
   var placeRook = function(board, badRow, badCol, rooksPlaced) {
-   debugger;
+   // debugger;
+
     for (var i = 0; i < n; i++) {
       for (var j = 0; j < n; j++) {
-        console.log(i, j);
+        console.log('i', i, 'j',j,'badrow', badRow, 'badcol', badCol, board, rooksPlaced);
         if ( rooksPlaced === 0 || noConflict(i, j, badRow, badCol)) {
-          board.togglePiece(i, j);
-          badCol.push(j);
-          badRow.push(i);
+          console.log('inside',board)
+          newBoardStr = JSON.stringify(board);
+          newBoard = JSON.parse(newBoardStr);
+          newBoard[i][j] = 1;
+          console.log('newboard', newBoard, board)
           rooksPlaced++;
+        console.log('again','i', i, 'j',j,'badrow', badRow, 'badcol', badCol, 'board',board);
+
           if (rooksPlaced === n) {
-            solution[JSON.stringify(board)] = true;
-            var r = badRow.pop();
-            var c = badCol.pop();
-            board.togglePiece(r, c);
-            rooksPlaced--;
+            solution[JSON.stringify(newBoard)] = true;
+            // var r = badRow.pop();
+            // var c = badCol.pop();
+            // board.togglePiece(r, c);
+            // rooksPlaced--;
+            // badRow = [];
+            // badCol = [];
+            // counter++;
+            // board = new Board({n:n})
+            console.log('solution',solution, 'n', n, 'counter',counter);
             return;
           }
-          placeRook(board, badRow, badCol, rooksPlaced);
+          placeRook(newBoard, badRow.concat(i), badCol.concat(j), rooksPlaced);
           
         }
       }
     }
-    var r = badRow.pop();
-    var c = badCol.pop();
-    board.togglePiece(r, c);
-    rooksPlaced--;
+    badRow = [];
+    badCol = []
+    // board.togglePiece(r, c);
+    // rooksPlaced--;
     return;
   };
-
-
-
-  // for (var i = 0; i < n; i++) {
-  //   for ( var j = 0; j < n; j++) {
-  //     arr.togglePiece(i, j);
-  //     // Create two databases
-  //     badRow[i] = true;
-  //     badCol[j] = true;
-  //     placeRook(arr);    
-  //   }
-  // }
-  // //console.log(n);
-  placeRook(arr, [], [], 0);
+  placeRook(board, [], [], 0);
   var solutionCount = Object.keys(solution).length;
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
