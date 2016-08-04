@@ -93,7 +93,6 @@ window.countNRooksSolutions = function(n) {
 
   placeRook(arr, [], [], 0, 0);
   var solutionCount = Object.keys(solution).length;
-  console.log(solution);
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 
