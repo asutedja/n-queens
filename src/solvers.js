@@ -59,13 +59,20 @@ window.countNRooksSolutions = function(n) {
   var solution = {}; //fixme
   //Like rock,paper, scissors
   var arr = new Board({n: n});
-  var rooksPlaced = 0;
-  var badCol = [];
-  var badRow = [];
+  //var rooksPlaced = 0;
+  //var badCol = [];
+  //var badRow = [];
+
+  var noConflict = function (row, column, badRow, badCol) {
+    if (badCol.includes(column) || badRow.includes(row)) {
+      return false;
+    }
+    return true;
+  };
 
   //arr.togglePiece(0, 0);
   var placeRook = function(board, badRow, badCol, rooksPlaced) {
-   //debugger;
+   debugger;
     for (var i = 0; i < n; i++) {
       for (var j = 0; j < n; j++) {
         console.log(i, j);
@@ -74,29 +81,27 @@ window.countNRooksSolutions = function(n) {
           badCol.push(j);
           badRow.push(i);
           rooksPlaced++;
-          placeRook(board, badRow, badCol, rooksPlaced);
           if (rooksPlaced === n) {
             solution[JSON.stringify(board)] = true;
-            badRow.pop();
-            badCol.pop();
+            var r = badRow.pop();
+            var c = badCol.pop();
+            board.togglePiece(r, c);
             rooksPlaced--;
             return;
           }
+          placeRook(board, badRow, badCol, rooksPlaced);
+          
         }
       }
     }
-    badRow.pop();
-    badCol.pop();
+    var r = badRow.pop();
+    var c = badCol.pop();
+    board.togglePiece(r, c);
     rooksPlaced--;
     return;
   };
 
-  var noConflict = function (row, column, badRow, badCol) {
-    if (badCol.includes(column) || badRow.includes(row)) {
-      return false;
-    }
-    return true;
-  };
+
 
   // for (var i = 0; i < n; i++) {
   //   for ( var j = 0; j < n; j++) {
@@ -108,7 +113,7 @@ window.countNRooksSolutions = function(n) {
   //   }
   // }
   // //console.log(n);
-  placeRook(arr, badRow, badCol, rooksPlaced);
+  placeRook(arr, [], [], 0);
   var solutionCount = Object.keys(solution).length;
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
